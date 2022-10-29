@@ -15,8 +15,7 @@ def after_reg_kb():
     keybd = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton("Да")
     btn2 = types.KeyboardButton("Нет")
-    btn3 = types.KeyboardButton("Перезапуск")
-    keybd.add(btn1, btn2, btn3)
+    keybd.add(btn1, btn2)
     return keybd
 
 
@@ -32,5 +31,17 @@ def switch_fem_kb():
 def restart_kb():
     keybd = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("Перезапуск")
+    keybd.add(btn1)
+    return keybd
+
+def after_reg_kb_if_yes():
+    keybd = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = types.KeyboardButton("/start_browsing_profiles")
+    keybd.add(btn1)
+    return keybd
+
+def default():
+    keybd = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = types.KeyboardButton("/start")
     keybd.add(btn1)
     return keybd
