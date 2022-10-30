@@ -8,6 +8,7 @@ bot = telebot.TeleBot(token=config.TOKEN)
 @bot.message_handler(commands=['start'])
 def start(message):
     # #user_name and user_id will need to be entered into the database
+    config.temporary_storage_of_received_data[message.from_user.id] = {}
     config.temporary_storage_of_received_data[message.from_user.id]['user_id'] = message.from_user.id
     
     if config.temporary_storage_of_received_data[message.from_user.id]["user_id"] != message.from_user.id:   #Здесь будет проверка наличия анкеты у пользователя
@@ -151,9 +152,7 @@ def user_info(message):
 
             #отображение анкеты
             bot.send_message(message.chat.id, 
-                f"Вот ваша анкета:\n{config.temporary_storage_of_received_data[message.from_user.id]['name']}, {config.temporary_storage_of_received_data[message.from_user.id]['fem']}",reply_markup=kb.after_reg_kb())
-            bot.send_message(message.chat.id, 
-                config.temporary_storage_of_received_data[message.from_user.id], 
+                f"Вот ваша анкета:\n{config.temporary_storage_of_received_data[message.from_user.id]['name']}, {config.temporary_storage_of_received_data[message.from_user.id]['user_age']}",
                 reply_markup=kb.after_reg_kb())
             bot.send_photo(message.chat.id,
                 config.temporary_storage_of_received_data[message.from_user.id]['img_path'])
