@@ -229,6 +229,7 @@ def search_tuple_db(search_cur_val, table_name='acquaintaces_7', search_val='use
     # exception      
     except Exception as _ex:
         print('Функция для работы с БД (search_tuple_db) выдала ошибку: {0}'.format(_ex))
+        return 1
     # finally (close connection)
     finally:
         if connection:

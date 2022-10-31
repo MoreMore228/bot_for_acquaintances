@@ -1,6 +1,7 @@
 import config
 import telebot
 import keyboard_funks as kb
+import output_funks as outf
 import work_with_db as db
 
 
@@ -13,8 +14,8 @@ def start(message):
     config.temporary_storage_of_received_data[message.from_user.id] = {}
     config.temporary_storage_of_received_data[message.from_user.id]['user_id'] = message.from_user.id
     
-    if config.temporary_storage_of_received_data[message.from_user.id]["user_id"] != message.from_user.id:   #Здесь будет проверка наличия анкеты у пользователя
-        bot.send_message(message.chat.id, "Хотите перейти к просмотру анкет? (command - /start_browsing_profiles)", reply_markup=kb.after_reg_kb())
+    if config.temporary_storage_of_received_data[message.from_user.id]["user_id"] == db.search_tuple_db(message.from_use.id)["user_id"]:   #Здесь будет проверка наличия анкеты у пользователя
+        bot.send_message(message.chat.id, "Хотите перейти к просмотру анкет?", reply_markup=kb.menu_kb())
     else:   #добавляем user_id, user_name в бд
         config.temporary_storage_of_received_data[message.from_user.id]["user_name"] = str("@" + message.from_user.username)
         #    ...
@@ -155,9 +156,9 @@ def user_info(message):
             config.temporary_storage_of_received_data[message.from_user.id]["user_unfo"] = message.text
 
             #отображение анкеты
-            bot.send_photo(message.chat.id, config.temporary_storage_of_received_data[message.from_user.id]['img_path'],
-                caption=f"Вот ваша анкета:\n{config.temporary_storage_of_received_data[message.from_user.id]['name']}, {config.temporary_storage_of_received_data[message.from_user.id]['user_age']}",
-                reply_markup=kb.after_reg_kb())
+            bot.send_photo(message.chat.id, outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[0],
+                caption="Вот ваша анкета: {0}".format(outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[1], 
+                reply_markup=kb.after_reg_kb()))
             
             #запрос, нравится или нет
             total_req = bot.send_message(message.chat.id, "Нравится?", reply_markup=kb.after_reg_kb()) #Bot send total anket and req. "Do u like it?"
@@ -179,45 +180,87 @@ def total(message):
     try:
         if message.text.lower() == "да":
             #загрузка в бд всех введенных данных пользователя
-            # db.insert_tuple_in_db(
-            #     table_name = "acquaintaces_7",
-            #     user_id=config.temporary_storage_of_received_data[message.from_user.id]['user_id'], 
-            #     user_name=config.temporary_storage_of_received_data[message.from_user.id]['user_name'], 
-            #     img_path=config.temporary_storage_of_received_data[message.from_user.id]['img_path'], 
-            #     name=config.temporary_storage_of_received_data[message.from_user.id]['name'], 
-            #     user_age=config.temporary_storage_of_received_data[message.from_user.id]['user_age'], 
-            #     user_city=config.temporary_storage_of_received_data[message.from_user.id]['user_city'], 
-            #     user_info=config.temporary_storage_of_received_data[message.from_user.id]['user_info']
-            #     )
+            db.insert_tuple_in_db(
+                #добавь table_name 
+                user_id=config.temporary_storage_of_received_data[message.from_user.id]['user_id'], 
+                user_name=config.temporary_storage_of_received_data[message.from_user.id]['user_name'], 
+                img_path=config.temporary_storage_of_received_data[message.from_user.id]['img_path'], 
+                name=config.temporary_storage_of_received_data[message.from_user.id]['name'], 
+                user_age=config.temporary_storage_of_received_data[message.from_user.id]['user_age'], 
+                user_city=config.temporary_storage_of_received_data[message.from_user.id]['user_city'], 
+                user_info=config.temporary_storage_of_received_data[message.from_user.id]['user_info']
+                )
             
             
             
             del config.temporary_storage_of_received_data[message.from_user.id]
             
             bot.send_message(message.chat.id, 
-                "Хотите перейти к просмотру анкет? (command - /start_browsing_profiles)", 
-                reply_markup=kb.after_reg_kb_if_yes())
+                "Хотите перейти к просмотру анкет?", 
+                reply_markup=kb.menu_kb())
         elif message.text.lower() == "нет":
             restart = bot.send_message(message.chat.id, 
                 "Создадим анкету (отправьте что угодно, чтобы начать)", 
                 reply_markup=kb.reg_kb())
             bot.register_next_step_handler(restart, reg)
         else:
-            bot.send_message(message.chat.id, "?", reply_markup=kb.reg_kb())
+            bot.send_message(message.chat.id, "Неизвестная команда", reply_markup=kb.reg_kb())
             bot.send_message(message.chat.id, 
-                "Хотите перейти к просмотру анкет? (command - /start_browsing_profiles)", 
-                reply_markup=kb.after_reg_kb_if_yes())
+                "Хотите перейти к просмотру анкет?", 
+                reply_markup=kb.menu_kb())
             
     except Exception as ex:
-        bot.send_message(message.chat.id, ex, reply_markup=kb.reg_kb())
+        bot.send_message(message.chat.id, "Ошибка: {0}".format(ex), reply_markup=kb.reg_kb())
         print(ex)
 
 
-@bot.message_handler(commands=["start_browsing_profiles"])
-def browsing_profiles(message):
-    #if message.from_user.id in db
-    bot.send_message(message.chat.id, "None", reply_markup=kb.default())
-    pass 
+@bot.message_handler(content_types=["text"])
+def menu(message):
+    try:
+        if message.text.lower() == "смотреть анкеты":
+            start_to_viewing_profiles_req = bot.send_message(message.chat.id, "Нажмите, чтобы начать", reply_markup=kb.reg_kb())
+            bot.register_next_step_handler(start_to_viewing_profiles_req, viewing_profiles)
+        elif message.text.lower() == "моя акета":
+            vie_my_profile = bot.send_photo(message.chat.id, outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[0],
+                caption="Вот ваша анкета: {0}".format(outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[1], 
+                reply_markup=kb.menu_kb()))
+            bot.register_next_step_handler(vie_my_profile, menu)
+        elif message.text.lower() == "удали мою анкету":
+            are_u_sure_req = bot.send_message(message.chat.id, 
+                "Вы уверенны, что хотите удалить свою анкету",
+                reply_markup=kb.after_reg_kb())
+            bot.register_next_step_handler(are_u_sure_req, kb.after_reg_kb())
+            
+        else:
+            pass
+    except AttributeError:
+        restart = bot.send_message(message.chat.id, 
+            "Похоже, вы ввели не текст, попробуйте снова",
+            reply_markup=kb.restart_kb())
+        bot.register_next_step_handler(restart, menu)
+def viewing_profiles(message):
+    pass
+
+def del_or_no(message):
+    try:
+        if message.text.lower() == "да":
+            db.delete_tuple_db("user_id", message.from_user.id)
+            bot.send_message(message.chat.id, 
+                "Ваша анкета успешно удалена",
+                reply_markup=kb.default())
+        elif message.text.lower() == "нет":
+            bot.send_message(message.chat.id, 
+                "Действие отменено",
+                reply_markup=kb.menu_kb())
+        else:
+            bot.send_message(message.chat.id, 
+                "Неизвестный ответ",
+                reply_markup=kb.menu_kb())
+    except AttributeError:
+        restart = bot.send_message(message.chat.id, 
+            "Похоже, вы ввели не текст, попробуйте снова, хотите ли вы удалить свою анкету",
+            reply_markup=kb.after_reg_kb())
+        bot.register_next_step_handler(restart, del_or_no)
 
 
 

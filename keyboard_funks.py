@@ -34,14 +34,29 @@ def restart_kb():
     keybd.add(btn1)
     return keybd
 
-def after_reg_kb_if_yes():
-    keybd = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    btn1 = types.KeyboardButton("/start_browsing_profiles")
-    keybd.add(btn1)
-    return keybd
+
 
 def default():
     keybd = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton("/start")
     keybd.add(btn1)
+    return keybd
+
+
+def viewing_profiles_kb():
+    keybd = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = types.KeyboardButton("Лайк")
+    btn2 = types.KeyboardButton("Дислайк")
+    btn3 = types.KeyboardButton("Меню")
+    keybd.add(btn1, btn2, btn3)
+    return keybd
+    
+
+
+def menu_kb():
+    keybd = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = types.KeyboardButton("Смотреть анкеты")
+    btn2 = types.KeyboardButton("Моя акета")
+    btn3 = types.KeyboardButton("Удалить мою анкету")
+    keybd.add(btn1, btn2)
     return keybd
