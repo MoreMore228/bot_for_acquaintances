@@ -230,7 +230,7 @@ def total(message):
 def menu(message):
     try:
         if message.text.lower() == "смотреть анкеты":
-            start_to_viewing_profiles_req = bot.send_message(message.chat.id, "Нажмите, чтобы начать", reply_markup=kb.reg_kb())
+            start_to_viewing_profiles_req = bot.send_message(message.chat.id, "Нажмите, чтобы начать просмотр анкет", reply_markup=kb.reg_kb())
             bot.register_next_step_handler(start_to_viewing_profiles_req, viewing_profiles)
         elif message.text.lower() == "моя анкета":
             vie_my_profile = bot.send_photo(message.chat.id, outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[0],
@@ -250,8 +250,14 @@ def menu(message):
             "Похоже, вы ввели не текст, попробуйте снова",
             reply_markup=kb.restart_kb())
         bot.register_next_step_handler(restart, menu)
+
+
 def viewing_profiles(message):
-    pass
+        bot.send_photo(message.chat.id,
+            outf.conclusion_of_the_questionnaire(db.random_full_user_info(message.from_user.id))
+
+            )
+
 
 def del_or_no(message):
     try:

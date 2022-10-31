@@ -128,7 +128,7 @@ def check_table(table_name='acquaintaces_3'):
 
 # ФУНКЦИЯ ВЫВОДА РАНДОМНОГО КАРТЕЖА С ИСКУЛЮЧЕНИЕМ(НЕ ВЫВОДИТЬ СВОЙ КАРТЕЖ)
 
-def random_full_user_info(self_int_user, table_name='acquaintaces_3'):
+def random_full_user_info(self_user_id, table_name='acquaintaces_3'):
     try:
         # connection
         connection = pymysql.connect(
@@ -140,7 +140,7 @@ def random_full_user_info(self_int_user, table_name='acquaintaces_3'):
         )
 
         with connection.cursor() as cursor:
-            cursor.execute("""SELECT * FROM {0} WHERE NOT int_user = {1}""".format(table_name, self_int_user))
+            cursor.execute("""SELECT * FROM {0} WHERE NOT user_id = {1}""".format(table_name, self_user_id))
             rows = cursor.fetchall()
             random_int_user = random.choice([x for x in range(1, len(rows)) if x != self_int_user])
             for row in rows:
