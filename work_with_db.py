@@ -237,4 +237,3 @@ def search_tuple_db(search_cur_val, table_name='acquaintaces_3', search_val='use
             connection.close()
 
 
-print(random_full_user_info(self_user_id=1))
