@@ -154,7 +154,7 @@ def random_full_user_info(table_name, self_int_user):
             connection.close()
 
 ######## ФУНКЦИЯ ДЛЯ ДОБАВЛЕНИЯ КОРТЕЖА В БД ########
-# # пример кортежа бд: 1, 905593527, '@SymPy', 'C:/user/1.png', 'Ярик', 18, 'Екб', 'Я занимаюсь тем-то и тем-то и мне скучно', 1
+# # пример кортежа бд: 1, 905593527, '@SymPy', 'C:/user/1.png', 'Ярик', 18, 'Екб', 'Я занимаюсь тем-то и тем-то и мне скучно'
 
 def insert_tuple_in_db(table_name, user_id, user_name, img_path, name, user_age, user_city, user_info):
     try:

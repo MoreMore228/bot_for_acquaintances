@@ -1,6 +1,8 @@
 import config
 import telebot
 import keyboard_funks as kb
+import work_with_db as db
+
 
 bot = telebot.TeleBot(token=config.TOKEN)
 
@@ -37,7 +39,9 @@ def femile(message):
             # 
         elif message.text.lower() == 'м' or message.text.lower() == 'ж':
             #save fem db
-            config.temporary_storage_of_received_data[message.from_user.id]['fem'] = message.text
+            config.temporary_storage_of_received_data[message.from_user.id]['user_fem'] = message.text
+            
+            #запрос фото
             photo_reqest = bot.send_message(message.chat.id, "Отправьте свое фото", 
                 reply_markup=kb.restart_kb())
             bot.register_next_step_handler(photo_reqest, photo)
@@ -151,11 +155,9 @@ def user_info(message):
             config.temporary_storage_of_received_data[message.from_user.id]["user_unfo"] = message.text
 
             #отображение анкеты
-            bot.send_message(message.chat.id, 
-                f"Вот ваша анкета:\n{config.temporary_storage_of_received_data[message.from_user.id]['name']}, {config.temporary_storage_of_received_data[message.from_user.id]['user_age']}",
+            bot.send_photo(message.chat.id, config.temporary_storage_of_received_data[message.from_user.id]['img_path'],
+                caption=f"Вот ваша анкета:\n{config.temporary_storage_of_received_data[message.from_user.id]['name']}, {config.temporary_storage_of_received_data[message.from_user.id]['user_age']}",
                 reply_markup=kb.after_reg_kb())
-            bot.send_photo(message.chat.id,
-                config.temporary_storage_of_received_data[message.from_user.id]['img_path'])
             
             #запрос, нравится или нет
             total_req = bot.send_message(message.chat.id, "Нравится?", reply_markup=kb.after_reg_kb()) #Bot send total anket and req. "Do u like it?"
@@ -176,8 +178,17 @@ def user_info(message):
 def total(message):
     try:
         if message.text.lower() == "да":
-            #загрузи config.temporary_storage_of_received_data[message.from_user.id]
-            #в бд
+            #загрузка в бд всех введенных данных пользователя
+            db.insert_tuple_in_db(
+                table_name = "acquaintaces_7",
+                user_id=config.temporary_storage_of_received_data[message.from_user.id]['user_id'], 
+                user_name=config.temporary_storage_of_received_data[message.from_user.id]['user_name'], 
+                img_path=config.temporary_storage_of_received_data[message.from_user.id]['img_path'], 
+                name=config.temporary_storage_of_received_data[message.from_user.id]['name'], 
+                user_age=config.temporary_storage_of_received_data[message.from_user.id]['user_age'], 
+                user_city=config.temporary_storage_of_received_data[message.from_user.id]['user_city'], 
+                user_info=config.temporary_storage_of_received_data[message.from_user.id]['user_info']
+                )
             
             
             
