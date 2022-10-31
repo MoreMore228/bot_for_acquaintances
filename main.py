@@ -232,7 +232,7 @@ def menu(message):
         if message.text.lower() == "смотреть анкеты":
             start_to_viewing_profiles_req = bot.send_message(message.chat.id, "Нажмите, чтобы начать", reply_markup=kb.reg_kb())
             bot.register_next_step_handler(start_to_viewing_profiles_req, viewing_profiles)
-        elif message.text.lower() == "моя акета":
+        elif message.text.lower() == "моя анкета":
             vie_my_profile = bot.send_photo(message.chat.id, outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[0],
                 caption="Вот ваша анкета: {0}".format(outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[1], 
                 reply_markup=kb.menu_kb()))

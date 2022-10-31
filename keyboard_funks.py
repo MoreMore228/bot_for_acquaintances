@@ -56,7 +56,7 @@ def viewing_profiles_kb():
 def menu_kb():
     keybd = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton("Смотреть анкеты")
-    btn2 = types.KeyboardButton("Моя акета")
+    btn2 = types.KeyboardButton("Моя анкета")
     btn3 = types.KeyboardButton("Удалить мою анкету")
-    keybd.add(btn1, btn2)
+    keybd.add(btn1, btn2, btn3)
     return keybd
