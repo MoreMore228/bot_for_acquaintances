@@ -254,8 +254,9 @@ def menu(message):
 
 def viewing_profiles(message):
         bot.send_photo(message.chat.id,
-            outf.conclusion_of_the_questionnaire(db.random_full_user_info(message.from_user.id))
-            
+            outf.conclusion_of_the_questionnaire(db.random_full_user_info(message.from_user.id))[0],
+            caption=outf.conclusion_of_the_questionnaire(db.random_full_user_info(message.from_user.id)),
+            reply_markup=kb.viewing_profiles()
             )
 
 
