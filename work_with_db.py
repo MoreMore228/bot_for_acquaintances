@@ -141,10 +141,12 @@ def random_full_user_info(self_user_id, table_name='acquaintaces_3'):
 
         with connection.cursor() as cursor:
             cursor.execute("""SELECT * FROM {0} WHERE NOT user_id = {1}""".format(table_name, self_user_id))
+            rows_for_return = cursor.fetchall()
+            cursor.execute("""SELECT user_id FROM {0} WHERE NOT user_id = {1}""".format(table_name, self_user_id))
             rows = cursor.fetchall()
-            random_int_user = random.choice([x for x in range(1, len(rows)) if x != self_int_user])
-            for row in rows:
-                if row['int_user'] == random_int_user:
+            random_int_user = random.choice([x for x in rows if x != self_user_id])
+            for row in rows_for_return:
+                if row['user_id'] == random_int_user['user_id']:
                     return row
     # exception 
     except Exception as _ex:
@@ -235,3 +237,4 @@ def search_tuple_db(search_cur_val, table_name='acquaintaces_3', search_val='use
             connection.close()
 
 
+print(random_full_user_info(self_user_id=1))
