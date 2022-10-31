@@ -179,16 +179,16 @@ def total(message):
     try:
         if message.text.lower() == "да":
             #загрузка в бд всех введенных данных пользователя
-            db.insert_tuple_in_db(
-                table_name = "acquaintaces_7",
-                user_id=config.temporary_storage_of_received_data[message.from_user.id]['user_id'], 
-                user_name=config.temporary_storage_of_received_data[message.from_user.id]['user_name'], 
-                img_path=config.temporary_storage_of_received_data[message.from_user.id]['img_path'], 
-                name=config.temporary_storage_of_received_data[message.from_user.id]['name'], 
-                user_age=config.temporary_storage_of_received_data[message.from_user.id]['user_age'], 
-                user_city=config.temporary_storage_of_received_data[message.from_user.id]['user_city'], 
-                user_info=config.temporary_storage_of_received_data[message.from_user.id]['user_info']
-                )
+            # db.insert_tuple_in_db(
+            #     table_name = "acquaintaces_7",
+            #     user_id=config.temporary_storage_of_received_data[message.from_user.id]['user_id'], 
+            #     user_name=config.temporary_storage_of_received_data[message.from_user.id]['user_name'], 
+            #     img_path=config.temporary_storage_of_received_data[message.from_user.id]['img_path'], 
+            #     name=config.temporary_storage_of_received_data[message.from_user.id]['name'], 
+            #     user_age=config.temporary_storage_of_received_data[message.from_user.id]['user_age'], 
+            #     user_city=config.temporary_storage_of_received_data[message.from_user.id]['user_city'], 
+            #     user_info=config.temporary_storage_of_received_data[message.from_user.id]['user_info']
+            #     )
             
             
             
@@ -210,6 +210,7 @@ def total(message):
             
     except Exception as ex:
         bot.send_message(message.chat.id, ex, reply_markup=kb.reg_kb())
+        print(ex)
 
 
 @bot.message_handler(commands=["start_browsing_profiles"])
