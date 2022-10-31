@@ -235,4 +235,3 @@ def search_tuple_db(search_cur_val, table_name='acquaintaces_3', search_val='use
             connection.close()
 
 
-delete_tuple_db(delete_value='user_id', delete_cur_value=905593527)

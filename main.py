@@ -274,7 +274,5 @@ def del_or_no(message):
             reply_markup=kb.after_reg_kb())
         bot.register_next_step_handler(restart, del_or_no)
 
-
-
 bot.polling(none_stop=True, interval=1, timeout=123)
 

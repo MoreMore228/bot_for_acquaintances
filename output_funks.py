@@ -4,5 +4,3 @@ def conclusion_of_the_questionnaire(data):
         data["user_age"],
         data["user_city"],
         data["user_info"])
-
-
