@@ -181,7 +181,6 @@ def insert_tuple_in_db(table_name, user_id, user_name, img_path, name, user_age,
             connection.close()
 
 
-
 ######## ФУНКЦИЯ ДЛЯ УДАЛЕНИЯ КАРТЕЖА / СТРОКИ В ТАБЛИЦУ ########
 
 def delete_tuple_db(table_name, delete_value, delete_cur_value):
@@ -207,3 +206,15 @@ def delete_tuple_db(table_name, delete_value, delete_cur_value):
     finally:
         if connection:
             connection.close()
+
+
+######## ФУНКЦИЯ ДЛЯ ВОЗВРАЩЕНИЯ КОРТЕЖА ИЗ ТАБЛИЦЫ ########\
+
+def search_tuple_db(search_cur_val, table_name='acquaintaces_7', search_val='user_id'):
+    try:
+        pass
+    except Exception as _ex:
+        print('Функция для работы с БД (search_tuple_db) выдала ошибку: {}'.format(_ex))
+    finally:
+        pass
+
