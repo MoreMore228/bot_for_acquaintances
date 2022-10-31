@@ -160,13 +160,13 @@ def user_info(message):
             restart = bot.send_message(message.chat.id, "Начнем?", 
                 reply_markup=kb.reg_kb())
             bot.register_next_step_handler(restart, reg)
-        elif len(message.text)<=255:
+        elif len(message.text) <= 255:
             config.temporary_storage_of_received_data[message.from_user.id]["user_unfo"] = message.text
 
             #отображение анкеты
             bot.send_photo(message.chat.id, outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[0],
-                caption="Вот ваша анкета: {0}".format(outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[1], 
-                reply_markup=kb.after_reg_kb()))
+                caption="Вот ваша анкета: {0}".format(outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[1]),
+                reply_markup=kb.after_reg_kb())
             
             #запрос, нравится или нет
             total_req = bot.send_message(message.chat.id, "Нравится?", reply_markup=kb.after_reg_kb()) #Bot send total anket and req. "Do u like it?"
