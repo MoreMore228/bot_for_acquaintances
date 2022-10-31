@@ -1,3 +1,4 @@
+from typing import Type
 import config
 import telebot
 import keyboard_funks as kb
@@ -18,18 +19,25 @@ def start(message):
         if config.temporary_storage_of_received_data[message.from_user.id]["user_id"] == db.search_tuple_db(message.from_user.id)["user_id"]:   #Здесь будет проверка наличия анкеты у пользователя
             bot.send_message(message.chat.id, "Хотите перейти к просмотру анкет?", reply_markup=kb.menu_kb())
         else:   #добавляем user_id, user_name в бд
-            config.temporary_storage_of_received_data[message.from_user.id]["user_name"] = "@" + str(message.from_user.username)
+            config.temporary_storage_of_received_data[message.from_user.id]["user_name"] = str("@" + message.from_user.username)
             #    ...
             #     И переходим к регистрации, добавляя вводимые данные в бд
             start = bot.send_message(message.chat.id, "Создадим анкету (отправьте что угодно, чтобы начать)", reply_markup=kb.reg_kb())
             bot.register_next_step_handler(start, reg)
     except TypeError:
+        try:
+            config.temporary_storage_of_received_data[message.from_user.id]["user_name"] = str("@" + message.from_user.username)
+                #    ...
+                #     И переходим к регистрации, добавляя вводимые данные в бд
+            start = bot.send_message(message.chat.id, "Создадим анкету (отправьте что угодно, чтобы начать)", reply_markup=kb.reg_kb())
+            bot.register_next_step_handler(start, reg)
+        except TypeError:
+            bot.send_message(message.chat.id, 
+                "Пожалуйста, создайте username в настойках профиля и запустите бота снова", 
+                reply_markup=kb.reg_kb()
+                )
 
-        config.temporary_storage_of_received_data[message.from_user.id]["user_name"] = "@" + str(message.from_user.username)
-            #    ...
-            #     И переходим к регистрации, добавляя вводимые данные в бд
-        start = bot.send_message(message.chat.id, "Создадим анкету (отправьте что угодно, чтобы начать)", reply_markup=kb.reg_kb())
-        bot.register_next_step_handler(start, reg)
+
 def reg(message):
     #Запрос пола
     fem_req = bot.send_message(message.chat.id, "Выберите пол: М/Ж", 
@@ -229,8 +237,18 @@ def total(message):
 def menu(message):
     try:
         if message.text.lower() == "смотреть анкеты":
-            start_to_viewing_profiles_req = bot.send_message(message.chat.id, "Нажмите, чтобы начать просмотр анкет", reply_markup=kb.reg_kb())
-            bot.register_next_step_handler(start_to_viewing_profiles_req, viewing_profiles)
+            
+            # временное сохранение первой выданной рандомом анкеты
+            config.temporary_storage_of_received_data[message.from_user.id] = db.random_full_user_info(message.from_user.id)
+
+            #вывод первой рандомной анкеты
+            start_to_viewing_profiles_req = bot.send_photo(message.chat.id, 
+                outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_data[message.from_user.id])[0],
+                caption=outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_data[message.from_user.id])[1],
+                reply_markup=kb.viewing_profiles_kb()
+                )
+            bot.register_next_step_handler(start_to_viewing_profiles_req, viewing_profiles,
+                config.temporary_storage_of_received_data[message.from_user.id]["user_id"])
         elif message.text.lower() == "моя анкета":
             vie_my_profile = bot.send_photo(message.chat.id, outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[0],
                 caption="Вот ваша анкета: {0}".format(outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[1], 
@@ -251,13 +269,67 @@ def menu(message):
         bot.register_next_step_handler(restart, menu)
 
 
-def viewing_profiles(message):
-        bot.send_photo(message.chat.id,
-            outf.conclusion_of_the_questionnaire(db.random_full_user_info(message.from_user.id))[0],
-            caption=outf.conclusion_of_the_questionnaire(db.random_full_user_info(message.from_user.id))[1],
-            reply_markup=kb.viewing_profiles_kb()
-            )
+def viewing_profiles(message, getter):
+    try:    
+        if message.text.lower() == "пролистать":
+            # временное сохранение выданной рандомом анкеты
+            config.temporary_storage_of_received_data[message.from_user.id] = db.random_full_user_info(message.from_user.id)
+            
+            #отображение следующей анкеты
+            viewing_profiles_req = bot.send_photo(message.chat.id, 
+                outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_data[message.from_user.id])[0],
+                caption=outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_data[message.from_user.id])[1],
+                reply_markup=kb.viewing_profiles_kb()
+                )
+            bot.register_next_step_handler(viewing_profiles_req, viewing_profiles, config.temporary_storage_of_received_data[message.from_user.id]["user_id"])
+            del config.temporary_storage_of_received_data[message.from_user.id]
+        elif message.text.lower() == "лайк":
+            # временное сохранение выданной рандомом анкеты
+            config.temporary_storage_of_received_data[message.from_user.id] = db.random_full_user_info(message.from_user.id)
+            
+            #Сообщения, тому, кого ты лайкнул
+            bot.send_message(getter,
+                "Вам поставили лайк: ",
+                )
+            bot.send_photo(getter, 
+                outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[0],
+                caption="{0}".format(outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[1], 
+                reply_markup=kb.menu_kb())
+                )
+            bot.send_message(getter,
+                "Начните общаться: {0}".format(message.from_user.username)
+                )
 
+            #отображение следующей анкеты
+            viewing_profiles_req = bot.send_photo(message.chat.id, 
+                outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_data[message.from_user.id])[0],
+                caption=outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_data[message.from_user.id])[1],
+                reply_markup=kb.viewing_profiles_kb()
+                )
+            bot.register_next_step_handler(viewing_profiles_req, viewing_profiles, 
+                config.temporary_storage_of_received_data[message.from_user.id]["user_id"]
+                )
+            del config.temporary_storage_of_received_data[message.from_user.id]
+        elif message.text.lower() == "меню":
+            bot.send_message(message.chat.id, 
+            "Вы в меню",
+            reply_markup=kb.menu_kb()
+            )
+        else:
+            bot.send_message(message.chat.id, 
+            "Неизвестная команда",
+            reply_markup=kb.menu_kb()
+            )
+    except AttributeError:
+        bot.send_message(message.chat.id, 
+            "Неизвестная команда",
+            reply_markup=kb.menu_kb()
+            )
+    except TypeError:
+        bot.send_message(message.chat.id, 
+            "TypeError",
+            reply_markup=kb.menu_kb()
+            )
 
 def del_or_no(message):
     try:

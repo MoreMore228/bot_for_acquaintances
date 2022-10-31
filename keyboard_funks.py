@@ -46,7 +46,7 @@ def default():
 def viewing_profiles_kb():
     keybd = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton("Лайк")
-    btn2 = types.KeyboardButton("Дислайк")
+    btn2 = types.KeyboardButton("Пролистать")
     btn3 = types.KeyboardButton("Меню")
     keybd.add(btn1, btn2, btn3)
     return keybd
