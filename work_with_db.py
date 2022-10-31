@@ -212,9 +212,22 @@ def delete_tuple_db(table_name, delete_value, delete_cur_value):
 
 def search_tuple_db(search_cur_val, table_name='acquaintaces_7', search_val='user_id'):
     try:
-        pass
+        # connection
+        connection = pymysql.connect(
+            host=host,
+            user=user,
+            password=password,
+            database=db_name,
+            cursorclass=pymysql.cursors.DictCursor
+        )
+        # запрос на удаление
+        with connection.cursor() as cursor:
+            cursor.execute()
+            connection.commit()
+    # exception      
     except Exception as _ex:
         print('Функция для работы с БД (search_tuple_db) выдала ошибку: {}'.format(_ex))
+    # finally (close connection)
     finally:
         pass
 
