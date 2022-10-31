@@ -255,7 +255,7 @@ def menu(message):
 def viewing_profiles(message):
         bot.send_photo(message.chat.id,
             outf.conclusion_of_the_questionnaire(db.random_full_user_info(message.from_user.id))
-
+            
             )
 
 
