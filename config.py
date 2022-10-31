@@ -4,7 +4,7 @@ temporary_storage_of_received_data = {}
 host = "127.0.0.1"
 user = 'yarike'
 password = 'ccZ-v8g-n8h-rCg'
-db_name = 'sakila'
+db_name = 'db_for_bot'
 
 
 

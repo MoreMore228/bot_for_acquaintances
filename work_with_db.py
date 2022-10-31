@@ -56,23 +56,23 @@ from config import db_name, host, password, user
 #     database=db_name,
 #     cursorclass=pymysql.cursors.DictCursor
 #     )
-#     # connection.autocommit = True
+    # connection.autocommit = True
 
 # # ##### СОЗДАНИЕ ТАБЛИЦЫ (1 РАЗ!!!)
 
-#     with connection.cursor() as cursor:
-#         cursor.execute(
-#             """CREATE TABLE acquaintaces_7(
-#                 int_user INT PRIMARY KEY AUTO_INCREMENT,
-#                 user_id INT,
-#                 user_name VARCHAR(20),
-#                 user_sex VARCHAR(10),
-#                 img_path VARCHAR(50),
-#                 name VARCHAR(50),
-#                 user_age INT,
-#                 user_city VARCHAR(50),
-#                 user_info VARCHAR(250));"""
-#         )
+    # with connection.cursor() as cursor:
+    #     cursor.execute(
+    #         """CREATE TABLE acquaintaces_1(
+    #             int_user INT PRIMARY KEY AUTO_INCREMENT,
+    #             user_id INT,
+    #             user_name VARCHAR(20),
+    #             user_sex VARCHAR(10),
+    #             img_path VARCHAR(50),
+    #             name VARCHAR(50),
+    #             user_age INT,
+    #             user_city VARCHAR(50),
+    #             user_info VARCHAR(250));"""
+    #     )
 
 # # список столбцов: int_user, user_id, user_name, user_sex, img_path, name, user_age, user_city, user_info, user_flag
 # # пример картежа бд: 1, 905593527, '@SymPy', 'C:/user/1.png', 'Ярик', 18, 'Екб', 'Я занимаюсь тем-то и тем-то и мне скучно', 1
@@ -99,7 +99,7 @@ from config import db_name, host, password, user
 
 #### PRINT ТАБЛИЦЫ (ВСЕЙ) ####
 
-def check_table(table_name):
+def check_table(table_name='acquaintaces_1'):
 # connection
     try:
         connection = pymysql.connect(
@@ -128,7 +128,7 @@ def check_table(table_name):
 
 # ФУНКЦИЯ ВЫВОДА РАНДОМНОГО КАРТЕЖА С ИСКУЛЮЧЕНИЕМ(НЕ ВЫВОДИТЬ СВОЙ КАРТЕЖ)
 
-def random_full_user_info(table_name, self_int_user):
+def random_full_user_info(self_int_user, table_name='acquaintaces_1'):
     try:
         # connection
         connection = pymysql.connect(
@@ -157,7 +157,7 @@ def random_full_user_info(table_name, self_int_user):
 ######## ФУНКЦИЯ ДЛЯ ДОБАВЛЕНИЯ КОРТЕЖА В БД ########
 # # пример кортежа бд: 1, 905593527, '@SymPy', 'C:/user/1.png', 'Ярик', 18, 'Екб', 'Я занимаюсь тем-то и тем-то и мне скучно'
 
-def insert_tuple_in_db(table_name, user_id, user_name, user_sex, img_path, name, user_age, user_city, user_info):
+def insert_tuple_in_db(user_id, user_name, user_sex, img_path, name, user_age, user_city, user_info, table_name='acquaintaces_1'):
     try:
         # connection
         connection = pymysql.connect(
@@ -184,7 +184,7 @@ def insert_tuple_in_db(table_name, user_id, user_name, user_sex, img_path, name,
 
 ######## ФУНКЦИЯ ДЛЯ УДАЛЕНИЯ КАРТЕЖА / СТРОКИ В ТАБЛИЦУ ########
 
-def delete_tuple_db(table_name, delete_value, delete_cur_value):
+def delete_tuple_db(delete_value, delete_cur_value, table_name='acquaintaces_1'):
     try:
         # connection
         connection = pymysql.connect(
@@ -211,7 +211,7 @@ def delete_tuple_db(table_name, delete_value, delete_cur_value):
 
 ######## ФУНКЦИЯ ДЛЯ ВОЗВРАЩЕНИЯ КОРТЕЖА ИЗ ТАБЛИЦЫ ########
 
-def search_tuple_db(search_cur_val, table_name='acquaintaces_7', search_val='user_id'):
+def search_tuple_db(search_cur_val, table_name='acquaintaces_1', search_val='user_id'):
     try:
         # connection
         connection = pymysql.connect(

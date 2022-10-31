@@ -14,7 +14,7 @@ def start(message):
     config.temporary_storage_of_received_data[message.from_user.id] = {}
     config.temporary_storage_of_received_data[message.from_user.id]['user_id'] = message.from_user.id
     
-    if config.temporary_storage_of_received_data[message.from_user.id]["user_id"] == db.search_tuple_db(message.from_use.id)["user_id"]:   #Здесь будет проверка наличия анкеты у пользователя
+    if config.temporary_storage_of_received_data[message.from_user.id]["user_id"] == db.search_tuple_db(message.from_user.id)["user_id"]:   #Здесь будет проверка наличия анкеты у пользователя
         bot.send_message(message.chat.id, "Хотите перейти к просмотру анкет?", reply_markup=kb.menu_kb())
     else:   #добавляем user_id, user_name в бд
         config.temporary_storage_of_received_data[message.from_user.id]["user_name"] = str("@" + message.from_user.username)
