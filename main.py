@@ -161,7 +161,7 @@ def user_info(message):
                 reply_markup=kb.reg_kb())
             bot.register_next_step_handler(restart, reg)
         elif len(message.text) <= 255:
-            config.temporary_storage_of_received_data[message.from_user.id]["user_unfo"] = message.text
+            config.temporary_storage_of_received_data[message.from_user.id]["user_info"] = message.text
 
             #отображение анкеты
             bot.send_photo(message.chat.id, config.temporary_storage_of_received_data[message.from_user.id]["img_path"],
