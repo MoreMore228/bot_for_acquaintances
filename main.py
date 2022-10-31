@@ -297,7 +297,7 @@ def viewing_profiles(message, getter):
                 reply_markup=kb.menu_kb())
                 )
             bot.send_message(getter,
-                "Начните общаться: {0}".format("".join("@", message.from_user.username))
+                "Начните общаться: {0}".format(str("@" + message.from_user.username))
                 )
 
             #отображение следующей анкеты
