@@ -48,7 +48,7 @@ def femile(message):
             # 
         elif message.text.lower() == 'м' or message.text.lower() == 'ж':
             #save fem db
-            config.temporary_storage_of_received_data[message.from_user.id]['user_fem'] = message.text
+            config.temporary_storage_of_received_data[message.from_user.id]['user_sex'] = message.text
             
             #запрос фото
             photo_reqest = bot.send_message(message.chat.id, "Отправьте свое фото", 
