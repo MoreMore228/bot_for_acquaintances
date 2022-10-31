@@ -194,7 +194,8 @@ def total(message):
             db.insert_tuple_in_db(
                 #добавь table_name 
                 user_id=config.temporary_storage_of_received_data[message.from_user.id]['user_id'], 
-                user_name=config.temporary_storage_of_received_data[message.from_user.id]['user_name'], 
+                user_name=config.temporary_storage_of_received_data[message.from_user.id]['user_name'],
+                user_sex=config.temporary_storage_of_received_data[message.from_user.id]['user_sex'], 
                 img_path=config.temporary_storage_of_received_data[message.from_user.id]['img_path'], 
                 name=config.temporary_storage_of_received_data[message.from_user.id]['name'], 
                 user_age=config.temporary_storage_of_received_data[message.from_user.id]['user_age'], 
