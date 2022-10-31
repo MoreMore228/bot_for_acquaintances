@@ -66,6 +66,7 @@ from config import db_name, host, password, user
 #                 int_user INT PRIMARY KEY AUTO_INCREMENT,
 #                 user_id INT,
 #                 user_name VARCHAR(20),
+#                 user_sex VARCHAR(10),
 #                 img_path VARCHAR(50),
 #                 name VARCHAR(50),
 #                 user_age INT,
@@ -73,7 +74,7 @@ from config import db_name, host, password, user
 #                 user_info VARCHAR(250));"""
 #         )
 
-# # список столбцов: int_user, user_id, user_name, img_path, name, user_age, user_city, user_info, user_flag
+# # список столбцов: int_user, user_id, user_name, user_sex, img_path, name, user_age, user_city, user_info, user_flag
 # # пример картежа бд: 1, 905593527, '@SymPy', 'C:/user/1.png', 'Ярик', 18, 'Екб', 'Я занимаюсь тем-то и тем-то и мне скучно', 1
 
 # # ПРОВЕРКА ТАБЛИЦЫ
@@ -156,7 +157,7 @@ def random_full_user_info(table_name, self_int_user):
 ######## ФУНКЦИЯ ДЛЯ ДОБАВЛЕНИЯ КОРТЕЖА В БД ########
 # # пример кортежа бд: 1, 905593527, '@SymPy', 'C:/user/1.png', 'Ярик', 18, 'Екб', 'Я занимаюсь тем-то и тем-то и мне скучно'
 
-def insert_tuple_in_db(table_name, user_id, user_name, img_path, name, user_age, user_city, user_info):
+def insert_tuple_in_db(table_name, user_id, user_name, user_sex, img_path, name, user_age, user_city, user_info):
     try:
         # connection
         connection = pymysql.connect(
@@ -167,9 +168,9 @@ def insert_tuple_in_db(table_name, user_id, user_name, img_path, name, user_age,
             cursorclass=pymysql.cursors.DictCursor
         )
         # Запрос на добавление
-        str_exe = "INSERT INTO {0}(`user_id`, `user_name`, `img_path`, `name`, `user_age`, `user_city`, `user_info`) VALUES (%s,%s,%s,%s,%s,%s,%s)".format(table_name)
+        str_exe = "INSERT INTO {0}(`user_id`, `user_name`, `user_sex`, `img_path`, `name`, `user_age`, `user_city`, `user_info`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)".format(table_name)
         with connection.cursor() as cursor:
-            cursor.execute(str_exe, (user_id, user_name, img_path, name, user_age, user_city, user_info))
+            cursor.execute(str_exe, (user_id, user_name, user_sex, img_path, name, user_age, user_city, user_info))
             connection.commit()
     # except
     except Exception as _ex:
