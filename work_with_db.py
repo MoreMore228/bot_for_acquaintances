@@ -208,7 +208,7 @@ def delete_tuple_db(table_name, delete_value, delete_cur_value):
             connection.close()
 
 
-######## ФУНКЦИЯ ДЛЯ ВОЗВРАЩЕНИЯ КОРТЕЖА ИЗ ТАБЛИЦЫ ########\
+######## ФУНКЦИЯ ДЛЯ ВОЗВРАЩЕНИЯ КОРТЕЖА ИЗ ТАБЛИЦЫ ########
 
 def search_tuple_db(search_cur_val, table_name='acquaintaces_7', search_val='user_id'):
     try:
@@ -222,12 +222,16 @@ def search_tuple_db(search_cur_val, table_name='acquaintaces_7', search_val='use
         )
         # запрос на удаление
         with connection.cursor() as cursor:
-            cursor.execute()
-            connection.commit()
+            cursor.execute("""SELECT * FROM {0} WHERE {1} = {2}""".format(table_name, search_val, search_cur_val))
+            row = cursor.fetchone()
+            return row
     # exception      
     except Exception as _ex:
-        print('Функция для работы с БД (search_tuple_db) выдала ошибку: {}'.format(_ex))
+        print('Функция для работы с БД (search_tuple_db) выдала ошибку: {0}'.format(_ex))
     # finally (close connection)
     finally:
-        pass
+        if connection:
+            connection.close()
+
+
 
