@@ -1,4 +1,4 @@
-TOKEN = "5713141156:AAH9_HDiw6xL5TjJSQoOBckdJl7O5xRcpdk"
+TOKEN = "1155924459:AAFlRSS64Cw-1UISKWqOrp3zxMnh7b4FHB4"
 id_in_db = False
 temporary_storage_of_received_data = {}
 host = "127.0.0.1"
