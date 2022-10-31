@@ -276,5 +276,5 @@ def del_or_no(message):
 
 
 
-bot.polling(none_stop=True, interval=1)
+bot.polling(none_stop=True, interval=1, timeout=123)
 
