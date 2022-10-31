@@ -30,7 +30,6 @@ def start(message):
             #     И переходим к регистрации, добавляя вводимые данные в бд
         start = bot.send_message(message.chat.id, "Создадим анкету (отправьте что угодно, чтобы начать)", reply_markup=kb.reg_kb())
         bot.register_next_step_handler(start, reg)
-
 def reg(message):
     #Запрос пола
     fem_req = bot.send_message(message.chat.id, "Выберите пол: М/Ж", 
@@ -255,7 +254,7 @@ def menu(message):
 def viewing_profiles(message):
         bot.send_photo(message.chat.id,
             outf.conclusion_of_the_questionnaire(db.random_full_user_info(message.from_user.id))[0],
-            caption=outf.conclusion_of_the_questionnaire(db.random_full_user_info(message.from_user.id)),
+            caption=outf.conclusion_of_the_questionnaire(db.random_full_user_info(message.from_user.id))[1],
             reply_markup=kb.viewing_profiles_kb()
             )
 
