@@ -56,18 +56,18 @@ from config import db_name, host, password, user
 #     database=db_name,
 #     cursorclass=pymysql.cursors.DictCursor
 #     )
-    # connection.autocommit = True
+#     connection.autocommit = True
 
 # # ##### СОЗДАНИЕ ТАБЛИЦЫ (1 РАЗ!!!)
 
     # with connection.cursor() as cursor:
     #     cursor.execute(
-    #         """CREATE TABLE acquaintaces_1(
+    #         """CREATE TABLE acquaintaces_2(
     #             int_user INT PRIMARY KEY AUTO_INCREMENT,
     #             user_id INT,
     #             user_name VARCHAR(20),
     #             user_sex VARCHAR(10),
-    #             img_path VARCHAR(50),
+    #             img_path VARCHAR(250),
     #             name VARCHAR(50),
     #             user_age INT,
     #             user_city VARCHAR(50),
@@ -87,7 +87,7 @@ from config import db_name, host, password, user
 #     #         print(row['user_age'])
 #     #     print('#' * 20)
 
-# # exception block
+# exception block
 # except Exception as _ex:
 #     print('[info] Error', _ex)
 
@@ -99,7 +99,7 @@ from config import db_name, host, password, user
 
 #### PRINT ТАБЛИЦЫ (ВСЕЙ) ####
 
-def check_table(table_name='acquaintaces_1'):
+def check_table(table_name='acquaintaces_2'):
 # connection
     try:
         connection = pymysql.connect(
@@ -128,7 +128,7 @@ def check_table(table_name='acquaintaces_1'):
 
 # ФУНКЦИЯ ВЫВОДА РАНДОМНОГО КАРТЕЖА С ИСКУЛЮЧЕНИЕМ(НЕ ВЫВОДИТЬ СВОЙ КАРТЕЖ)
 
-def random_full_user_info(self_int_user, table_name='acquaintaces_1'):
+def random_full_user_info(self_int_user, table_name='acquaintaces_2'):
     try:
         # connection
         connection = pymysql.connect(
@@ -157,7 +157,7 @@ def random_full_user_info(self_int_user, table_name='acquaintaces_1'):
 ######## ФУНКЦИЯ ДЛЯ ДОБАВЛЕНИЯ КОРТЕЖА В БД ########
 # # пример кортежа бд: 1, 905593527, '@SymPy', 'C:/user/1.png', 'Ярик', 18, 'Екб', 'Я занимаюсь тем-то и тем-то и мне скучно'
 
-def insert_tuple_in_db(user_id, user_name, user_sex, img_path, name, user_age, user_city, user_info, table_name='acquaintaces_1'):
+def insert_tuple_in_db(user_id, user_name, user_sex, img_path, name, user_age, user_city, user_info, table_name='acquaintaces_2'):
     try:
         # connection
         connection = pymysql.connect(
@@ -184,7 +184,7 @@ def insert_tuple_in_db(user_id, user_name, user_sex, img_path, name, user_age, u
 
 ######## ФУНКЦИЯ ДЛЯ УДАЛЕНИЯ КАРТЕЖА / СТРОКИ В ТАБЛИЦУ ########
 
-def delete_tuple_db(delete_value, delete_cur_value, table_name='acquaintaces_1'):
+def delete_tuple_db(delete_value, delete_cur_value, table_name='acquaintaces_2'):
     try:
         # connection
         connection = pymysql.connect(
@@ -211,7 +211,7 @@ def delete_tuple_db(delete_value, delete_cur_value, table_name='acquaintaces_1')
 
 ######## ФУНКЦИЯ ДЛЯ ВОЗВРАЩЕНИЯ КОРТЕЖА ИЗ ТАБЛИЦЫ ########
 
-def search_tuple_db(search_cur_val, table_name='acquaintaces_1', search_val='user_id'):
+def search_tuple_db(search_cur_val, table_name='acquaintaces_2', search_val='user_id'):
     try:
         # connection
         connection = pymysql.connect(
