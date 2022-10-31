@@ -18,14 +18,14 @@ def start(message):
         if config.temporary_storage_of_received_data[message.from_user.id]["user_id"] == db.search_tuple_db(message.from_user.id)["user_id"]:   #Здесь будет проверка наличия анкеты у пользователя
             bot.send_message(message.chat.id, "Хотите перейти к просмотру анкет?", reply_markup=kb.menu_kb())
         else:   #добавляем user_id, user_name в бд
-            config.temporary_storage_of_received_data[message.from_user.id]["user_name"] = str("@" + message.from_user.username)
+            config.temporary_storage_of_received_data[message.from_user.id]["user_name"] = "@" + str(message.from_user.username)
             #    ...
             #     И переходим к регистрации, добавляя вводимые данные в бд
             start = bot.send_message(message.chat.id, "Создадим анкету (отправьте что угодно, чтобы начать)", reply_markup=kb.reg_kb())
             bot.register_next_step_handler(start, reg)
     except TypeError:
 
-        config.temporary_storage_of_received_data[message.from_user.id]["user_name"] = str("@" + message.from_user.username)
+        config.temporary_storage_of_received_data[message.from_user.id]["user_name"] = "@" + str(message.from_user.username)
             #    ...
             #     И переходим к регистрации, добавляя вводимые данные в бд
         start = bot.send_message(message.chat.id, "Создадим анкету (отправьте что угодно, чтобы начать)", reply_markup=kb.reg_kb())
