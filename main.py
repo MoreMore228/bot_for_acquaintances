@@ -165,10 +165,10 @@ def user_info(message):
 
             #отображение анкеты
             bot.send_photo(message.chat.id, config.temporary_storage_of_received_data[message.from_user.id]["img_path"],
-                caption="Вот ваша анкета:\n{0}, {1}, {2}\n{3}".format(config.temporary_storage_of_received_data["name"],
-                    config.temporary_storage_of_received_data["user_age"],
-                    config.temporary_storage_of_received_data["user_city"],
-                    config.temporary_storage_of_received_data["user_info"]),
+                caption="Вот ваша анкета:\n{0}, {1}, {2}\n{3}".format(config.temporary_storage_of_received_data[message.from_user.id]["name"],
+                    config.temporary_storage_of_received_data[message.from_user.id]["user_age"],
+                    config.temporary_storage_of_received_data[message.from_user.id]["user_city"],
+                    config.temporary_storage_of_received_data[message.from_user.id]["user_info"]),
                 reply_markup=kb.after_reg_kb())
             
             #запрос, нравится или нет
