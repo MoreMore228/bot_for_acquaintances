@@ -241,7 +241,7 @@ def menu(message):
             are_u_sure_req = bot.send_message(message.chat.id, 
                 "Вы уверенны, что хотите удалить свою анкету",
                 reply_markup=kb.after_reg_kb())
-            bot.register_next_step_handler(are_u_sure_req, kb.after_reg_kb())
+            bot.register_next_step_handler(are_u_sure_req, del_or_no)
             
         else:
             pass
