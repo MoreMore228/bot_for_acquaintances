@@ -164,8 +164,11 @@ def user_info(message):
             config.temporary_storage_of_received_data[message.from_user.id]["user_unfo"] = message.text
 
             #отображение анкеты
-            bot.send_photo(message.chat.id, outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[0],
-                caption="Вот ваша анкета: {0}".format(outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[1]),
+            bot.send_photo(message.chat.id, config.temporary_storage_of_received_data[message.from_user.id]["img_path"],
+                caption="Вот ваша анкета:\n{0}, {1}, {2}\n{3}".format(config.temporary_storage_of_received_data["name"],
+                    config.temporary_storage_of_received_data["user_age"],
+                    config.temporary_storage_of_received_data["user_city"],
+                    config.temporary_storage_of_received_data["user_info"]),
                 reply_markup=kb.after_reg_kb())
             
             #запрос, нравится или нет
