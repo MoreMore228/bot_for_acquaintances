@@ -3,7 +3,7 @@ import config
 import telebot
 import keyboard_funks as kb
 import output_funks as outf
-import work_with_db as db
+import work_with_db_sqlite3 as db
 
 
 bot = telebot.TeleBot(token=config.TOKEN)
@@ -16,7 +16,7 @@ def start(message):
     config.temporary_storage_of_received_data[message.from_user.id]['user_id'] = message.from_user.id
 
     try:
-        if config.temporary_storage_of_received_data[message.from_user.id]["user_id"] == db.search_tuple_db(message.from_user.id)["user_id"]:   #Здесь будет проверка наличия анкеты у пользователя
+        if config.temporary_storage_of_received_data[message.from_user.id]["user_id"] == db.search_tuple_db(message.from_user.id)[1]:   #Здесь будет проверка наличия анкеты у пользователя
             bot.send_message(message.chat.id, "Хотите перейти к просмотру анкет?", reply_markup=kb.menu_kb())
         else:   #добавляем user_id, user_name в бд
             config.temporary_storage_of_received_data[message.from_user.id]["user_name"] = str("@" + message.from_user.username)
@@ -33,8 +33,7 @@ def start(message):
             bot.register_next_step_handler(start, reg)
         except TypeError:
             bot.send_message(message.chat.id, 
-                "Пожалуйста, создайте username в настойках профиля и запустите бота снова", 
-                reply_markup=kb.reg_kb()
+                "Пожалуйста, создайте username в настойках профиля и запустите бота снова"
                 )
 
 
@@ -223,13 +222,10 @@ def total(message):
                 reply_markup=kb.reg_kb())
             bot.register_next_step_handler(restart, reg)
         else:
-            bot.send_message(message.chat.id, "Неизвестная команда", reply_markup=kb.reg_kb())
-            bot.send_message(message.chat.id, 
-                "Хотите перейти к просмотру анкет?", 
-                reply_markup=kb.menu_kb())
-            
+            quest_again = bot.send_message(message.chat.id, "Неизвестная команда", reply_markup=kb.reg_kb())
+            bot.register_next_step_handler(quest_again, total)
     except Exception as ex:
-        bot.send_message(message.chat.id, "Ошибка: {0}".format(ex), reply_markup=kb.reg_kb())
+        bot.send_message(message.chat.id, "Ошибка: {0}".format(ex), reply_markup=kb.default())
         print(ex)
 
 
@@ -239,19 +235,19 @@ def menu(message):
         if message.text.lower() == "смотреть анкеты":
             
             # временное сохранение первой выданной рандомом анкеты
-            config.temporary_storage_of_received_data[message.from_user.id] = db.random_full_user_info(message.from_user.id)
-
+            config.temporary_storage_of_received_ankets[message.from_user.id] = db.random_full_user_info(message.from_user.id)
+            print(config.temporary_storage_of_received_ankets)
             #вывод первой рандомной анкеты
             start_to_viewing_profiles_req = bot.send_photo(message.chat.id, 
-                outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_data[message.from_user.id])[0],
-                caption=outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_data[message.from_user.id])[1],
+                outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_ankets[message.from_user.id])[0],
+                caption=outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_ankets[message.from_user.id])[1],
                 reply_markup=kb.viewing_profiles_kb()
                 )
             bot.register_next_step_handler(start_to_viewing_profiles_req, viewing_profiles,
-                config.temporary_storage_of_received_data[message.from_user.id]["user_id"])
+                config.temporary_storage_of_received_ankets[message.from_user.id][1])
         elif message.text.lower() == "моя анкета":
-            vie_my_profile = bot.send_photo(message.chat.id, outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[0],
-                caption="Вот ваша анкета: {0}".format(outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.from_user.id))[1], 
+            vie_my_profile = bot.send_photo(message.chat.id, outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.chat.id))[0],
+                caption="Вот ваша анкета: \n{0}".format(outf.conclusion_of_the_questionnaire(db.search_tuple_db(message.chat.id))[1], 
                 reply_markup=kb.menu_kb()))
             bot.register_next_step_handler(vie_my_profile, menu)
         elif message.text.lower() == "удали мою анкету":
@@ -264,28 +260,27 @@ def menu(message):
             pass
     except AttributeError:
         restart = bot.send_message(message.chat.id, 
-            "Похоже, вы ввели не текст, попробуйте снова",
+            "Неизвестная команда",
             reply_markup=kb.restart_kb())
         bot.register_next_step_handler(restart, menu)
 
-
+#Сюда пробрасывается user_id попавшейся анкеты(getter)
 def viewing_profiles(message, getter):
     try:    
         if message.text.lower() == "пролистать":
             # временное сохранение выданной рандомом анкеты
-            config.temporary_storage_of_received_data[message.from_user.id] = db.random_full_user_info(message.from_user.id)
+            config.temporary_storage_of_received_ankets[message.from_user.id] = db.random_full_user_info(message.from_user.id)
             
             #отображение следующей анкеты
             viewing_profiles_req = bot.send_photo(message.chat.id, 
-                outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_data[message.from_user.id])[0],
-                caption=outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_data[message.from_user.id])[1],
+                outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_ankets[message.from_user.id])[0],
+                caption=outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_ankets[message.from_user.id])[1],
                 reply_markup=kb.viewing_profiles_kb()
                 )
-            bot.register_next_step_handler(viewing_profiles_req, viewing_profiles, config.temporary_storage_of_received_data[message.from_user.id]["user_id"])
-            del config.temporary_storage_of_received_data[message.from_user.id]
+            bot.register_next_step_handler(viewing_profiles_req, viewing_profiles, config.temporary_storage_of_received_ankets[message.from_user.id][1])
         elif message.text.lower() == "лайк":
             # временное сохранение выданной рандомом анкеты
-            config.temporary_storage_of_received_data[message.from_user.id] = db.random_full_user_info(message.from_user.id)
+            config.temporary_storage_of_received_ankets[message.from_user.id] = db.random_full_user_info(message.from_user.id)
             
             #Сообщения, тому, кого ты лайкнул
             bot.send_message(getter,
@@ -302,14 +297,14 @@ def viewing_profiles(message, getter):
 
             #отображение следующей анкеты
             viewing_profiles_req = bot.send_photo(message.chat.id, 
-                outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_data[message.from_user.id])[0],
-                caption=outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_data[message.from_user.id])[1],
+                outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_ankets[message.from_user.id])[0],
+                caption=outf.conclusion_of_the_questionnaire(config.temporary_storage_of_received_ankets[message.from_user.id])[1],
                 reply_markup=kb.viewing_profiles_kb()
                 )
             bot.register_next_step_handler(viewing_profiles_req, viewing_profiles, 
-                config.temporary_storage_of_received_data[message.from_user.id]["user_id"]
+                config.temporary_storage_of_received_ankets[message.from_user.id][1]
                 )
-            del config.temporary_storage_of_received_data[message.from_user.id]
+            del config.temporary_storage_of_received_ankets[message.from_user.id]
         elif message.text.lower() == "меню":
             bot.send_message(message.chat.id, 
             "Вы в меню",
@@ -325,9 +320,9 @@ def viewing_profiles(message, getter):
             "Неизвестная команда",
             reply_markup=kb.menu_kb()
             )
-    except TypeError:
+    except Exception as ex:
         bot.send_message(message.chat.id, 
-            "TypeError",
+            f"TypeError: {ex}",
             reply_markup=kb.menu_kb()
             )
 
